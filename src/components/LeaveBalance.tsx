@@ -120,7 +120,7 @@ export const LeaveBalance = ({
         isOpen={isModalOpen}
         onOpenChange={(open) => !open && setIsModalOpen(false)}
         isDismissable
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-transparent p-4 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out"
       >
         <AriaModal
           className={cx(
