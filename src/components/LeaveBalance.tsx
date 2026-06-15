@@ -3,24 +3,26 @@ import { InfoCard } from "@/components/InfoCard";
 import { Button } from "@/components/base/buttons/button";
 import { Modal } from "@/components/base/modal/modal";
 import { InputField } from "@/components/base/input/input";
+import { useToast } from "@/components/base/toast/toast";
 import { Plane, RefreshCw01, CalendarMinus01, CalendarCheck01 } from "@untitledui/icons";
 
 export interface LeaveBalanceProps {
   annualLeaveHours?: number;
   sickLeaveHours?: number;
-  onSyncXero?: () => void;
   className?: string;
 }
 
 export const LeaveBalance = ({
   annualLeaveHours: initialAnnual = 147,
   sickLeaveHours: initialSick = 70.2,
-  onSyncXero,
   className,
 }: LeaveBalanceProps) => {
+  const { showToast } = useToast();
+
   const [annualLeaveHours, setAnnualLeaveHours] = useState(initialAnnual);
   const [sickLeaveHours, setSickLeaveHours] = useState(initialSick);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [draftAnnual, setDraftAnnual] = useState(String(initialAnnual));
   const [draftSick, setDraftSick] = useState(String(initialSick));
 
@@ -38,6 +40,28 @@ export const LeaveBalance = ({
     setIsModalOpen(false);
   };
 
+  const handleSyncXero = async () => {
+    setIsSyncing(true);
+    try {
+      await new Promise((resolve, reject) =>
+        setTimeout(() => (Math.random() > 0.25 ? resolve(null) : reject()), 2000),
+      );
+      showToast({
+        type: "success",
+        title: "XERO sync successful",
+        message: "Leave balances have been updated from XERO.",
+      });
+    } catch {
+      showToast({
+        type: "error",
+        title: "XERO sync failed",
+        message: "Could not connect to XERO. Please try again.",
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   return (
     <>
       <InfoCard
@@ -45,10 +69,17 @@ export const LeaveBalance = ({
         icon={<Plane className="size-4" />}
         action={
           <div className="flex items-center gap-2">
-            <Button size="sm" color="secondary" onPress={openModal}>
+            <Button size="sm" color="secondary" onPress={openModal} isDisabled={isSyncing}>
               Update
             </Button>
-            <Button size="sm" color="primary" iconLeading={RefreshCw01} onPress={onSyncXero}>
+            <Button
+              size="sm"
+              color="primary"
+              iconLeading={RefreshCw01}
+              onPress={handleSyncXero}
+              isLoading={isSyncing}
+              showTextWhileLoading
+            >
               Sync XERO
             </Button>
           </div>
