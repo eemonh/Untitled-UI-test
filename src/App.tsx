@@ -1,29 +1,15 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from './assets/vite.svg'
-// import heroImg from './assets/hero.png'
 import './App.css'
-import { Button } from './components/base/buttons/button';
 import "./styles/globals.css";
-
-
+import { ReviewDashboard } from './components/ReviewDashboard';
 
 function App() {
-  // const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section>
-        <div className="hero">
-      <Button color="primary-destructive" >Delete project</Button>
-
-        </div>
-      </section>
-
-
-
-    </>
+    <main className="flex-1 w-full p-4 sm:p-6 md:p-8 flex flex-col justify-start">
+      <div className="mb-6 text-left">
+      </div>
+      <ReviewDashboard />
+    </main>
   )
 }
 
-export default App
+export default App;
