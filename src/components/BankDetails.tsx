@@ -1,9 +1,15 @@
 import { useState } from "react";
+import {
+  Dialog as AriaDialog,
+  Modal as AriaModal,
+  ModalOverlay as AriaModalOverlay,
+  Heading as AriaHeading,
+} from "react-aria-components";
 import { InfoCard } from "@/components/InfoCard";
 import { Button } from "@/components/base/buttons/button";
-import { Modal } from "@/components/base/modal/modal";
 import { InputField } from "@/components/base/input/input";
-import { Bank, CreditCard01, Hash01, Building01 } from "@untitledui/icons";
+import { Bank, CreditCard01, Hash01, Building01, X } from "@untitledui/icons";
+import { cx } from "@/utils/cx";
 
 export interface BankDetailsProps {
   bankName?: string;
@@ -22,21 +28,21 @@ export const BankDetails = ({
   const [bsb, setBsb] = useState(initialBsb);
   const [accountNumber, setAccountNumber] = useState(initialAccount);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [draftBank, setDraftBank] = useState(initialBank);
-  const [draftBsb, setDraftBsb] = useState(initialBsb);
-  const [draftAccount, setDraftAccount] = useState(initialAccount);
+  const [draftBank, setDraftBank] = useState("");
+  const [draftBsb, setDraftBsb] = useState("");
+  const [draftAccount, setDraftAccount] = useState("");
 
   const openModal = () => {
-    setDraftBank(bankName);
-    setDraftBsb(bsb);
-    setDraftAccount(accountNumber);
+    setDraftBank("");
+    setDraftBsb("");
+    setDraftAccount("");
     setIsModalOpen(true);
   };
 
   const handleSave = () => {
-    setBankName(draftBank);
-    setBsb(draftBsb);
-    setAccountNumber(draftAccount);
+    if (draftBank.trim()) setBankName(draftBank.trim());
+    if (draftBsb.trim()) setBsb(draftBsb.trim());
+    if (draftAccount.trim()) setAccountNumber(draftAccount.trim());
     setIsModalOpen(false);
   };
 
@@ -85,42 +91,83 @@ export const BankDetails = ({
         </div>
       </InfoCard>
 
-      <Modal
+      {/* Custom modal matching the design */}
+      <AriaModalOverlay
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Update Bank Details"
-        description="Edit the bank details for this employee."
-        footer={
-          <>
-            <Button size="md" color="secondary" onPress={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button size="md" color="primary" onPress={handleSave}>
-              Save changes
-            </Button>
-          </>
-        }
+        onOpenChange={(open) => !open && setIsModalOpen(false)}
+        isDismissable
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out"
       >
-        <InputField
-          label="Bank Name"
-          value={draftBank}
-          onChange={setDraftBank}
-          placeholder="e.g. Commonwealth"
-        />
-        <InputField
-          label="BSB"
-          value={draftBsb}
-          onChange={setDraftBsb}
-          placeholder="e.g. 454 666"
-          hint="6-digit BSB number."
-        />
-        <InputField
-          label="Account Number"
-          value={draftAccount}
-          onChange={setDraftAccount}
-          placeholder="e.g. 045 854 454"
-        />
-      </Modal>
+        <AriaModal
+          className={cx(
+            "relative w-full max-w-md rounded-2xl bg-white shadow-2xl",
+            "entering:animate-in entering:fade-in entering:zoom-in-95 entering:duration-150",
+            "exiting:animate-out exiting:fade-out exiting:zoom-out-95 exiting:duration-100",
+          )}
+        >
+          <AriaDialog className="outline-none">
+            {/* Close button */}
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 flex size-7 items-center justify-center rounded-lg text-fg-quaternary transition hover:bg-gray-100 focus:outline-none"
+              aria-label="Close"
+            >
+              <X className="size-4" />
+            </button>
+
+            {/* Body */}
+            <div className="flex flex-col gap-5 p-6">
+              {/* Featured icon */}
+              <div className="flex size-10 items-center justify-center rounded-xl border border-secondary bg-primary shadow-xs">
+                <Bank className="size-5 text-fg-quaternary" />
+              </div>
+
+              {/* Title & subtitle */}
+              <div className="flex flex-col gap-1">
+                <AriaHeading slot="title" className="text-lg font-semibold text-gray-900">
+                  Update Bank Details
+                </AriaHeading>
+                <p className="text-sm text-gray-500">New Bank Details of the employee</p>
+              </div>
+
+              {/* Fields */}
+              <div className="flex flex-col gap-4">
+                <InputField
+                  label="Bank Name"
+                  value={draftBank}
+                  onChange={setDraftBank}
+                  placeholder="Bank Name"
+                  required
+                />
+                <InputField
+                  label="BSB Number"
+                  value={draftBsb}
+                  onChange={setDraftBsb}
+                  placeholder="000 000"
+                  required
+                />
+                <InputField
+                  label="Account Number"
+                  value={draftAccount}
+                  onChange={setDraftAccount}
+                  placeholder="000 000 000"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="grid grid-cols-2 gap-3 px-6 pb-6">
+              <Button size="md" color="secondary" onPress={() => setIsModalOpen(false)} className="w-full justify-center">
+                Cancel
+              </Button>
+              <Button size="md" color="primary" onPress={handleSave} className="w-full justify-center">
+                Update
+              </Button>
+            </div>
+          </AriaDialog>
+        </AriaModal>
+      </AriaModalOverlay>
     </>
   );
 };
