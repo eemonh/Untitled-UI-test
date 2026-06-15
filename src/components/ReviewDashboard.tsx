@@ -1,6 +1,8 @@
 import { PayPointReview } from "@/components/PayPointReview";
 import { ProbationaryPeriod } from "@/components/ProbationaryPeriod";
 import { ActivityLog } from "@/components/ActivityLog";
+import { LeaveBalance } from "@/components/LeaveBalance";
+import { BankDetails } from "@/components/BankDetails";
 import {
   Award01,
   Sliders01,
@@ -94,7 +96,13 @@ const activityItems: ActivityItem[] = [
 export const ReviewDashboard = () => {
   return (
     <div className="w-full text-left bg-secondary p-6 md:p-8 flex flex-col gap-6 rounded-2xl border border-secondary shadow-sm">
-      {/* Top Row: Pay Point Review & Probationary Period */}
+      {/* Top Row: Leave Balance & Bank Details */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        <LeaveBalance />
+        <BankDetails />
+      </div>
+
+      {/* Second Row: Pay Point Review & Probationary Period */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         <div className="lg:col-span-2 flex flex-col">
           <PayPointReview
