@@ -3,6 +3,7 @@ import { ProbationaryPeriod } from "@/components/ProbationaryPeriod";
 import { ActivityLog } from "@/components/ActivityLog";
 import { LeaveBalance } from "@/components/LeaveBalance";
 import { BankDetails } from "@/components/BankDetails";
+import { Payroll } from "@/components/Payroll";
 import {
   Award01,
   Sliders01,
@@ -96,7 +97,12 @@ const activityItems: ActivityItem[] = [
 export const ReviewDashboard = () => {
   return (
     <div className="w-full text-left bg-secondary p-6 md:p-8 flex flex-col gap-6 rounded-2xl border border-secondary shadow-sm">
-      {/* Top Row: Leave Balance & Bank Details */}
+      {/* Top Row: Payroll */}
+      <div className="w-full">
+        <Payroll />
+      </div>
+
+      {/* Second Row: Leave Balance & Bank Details */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         <LeaveBalance />
         <BankDetails />
