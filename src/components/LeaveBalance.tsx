@@ -1,10 +1,16 @@
 import { useState } from "react";
+import {
+  Dialog as AriaDialog,
+  Modal as AriaModal,
+  ModalOverlay as AriaModalOverlay,
+  Heading as AriaHeading,
+} from "react-aria-components";
 import { InfoCard } from "@/components/InfoCard";
 import { Button } from "@/components/base/buttons/button";
-import { Modal } from "@/components/base/modal/modal";
 import { InputField } from "@/components/base/input/input";
 import { useToast } from "@/components/base/toast/toast";
-import { Plane, RefreshCw01, CalendarMinus01, CalendarCheck01 } from "@untitledui/icons";
+import { Plane, RefreshCw01, CalendarMinus01, CalendarCheck01, X } from "@untitledui/icons";
+import { cx } from "@/utils/cx";
 
 export interface LeaveBalanceProps {
   annualLeaveHours?: number;
@@ -109,39 +115,78 @@ export const LeaveBalance = ({
         </div>
       </InfoCard>
 
-      <Modal
+      {/* Custom modal matching the design */}
+      <AriaModalOverlay
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Update Leave Balance"
-        description="Edit the leave balances for this employee."
-        footer={
-          <>
-            <Button size="md" color="secondary" onPress={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button size="md" color="primary" onPress={handleSave}>
-              Save changes
-            </Button>
-          </>
-        }
+        onOpenChange={(open) => !open && setIsModalOpen(false)}
+        isDismissable
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 entering:animate-in entering:fade-in exiting:animate-out exiting:fade-out"
       >
-        <InputField
-          label="Annual Leave (Hours)"
-          value={draftAnnual}
-          onChange={setDraftAnnual}
-          placeholder="e.g. 147"
-          type="number"
-          hint="Total annual leave hours available."
-        />
-        <InputField
-          label="Sick Leave (Hours)"
-          value={draftSick}
-          onChange={setDraftSick}
-          placeholder="e.g. 70.2"
-          type="number"
-          hint="Total sick leave hours available."
-        />
-      </Modal>
+        <AriaModal
+          className={cx(
+            "relative w-full max-w-md rounded-2xl bg-white shadow-2xl",
+            "entering:animate-in entering:fade-in entering:zoom-in-95 entering:duration-150",
+            "exiting:animate-out exiting:fade-out exiting:zoom-out-95 exiting:duration-100",
+          )}
+        >
+          <AriaDialog className="outline-none">
+            {/* Close button */}
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 flex size-7 items-center justify-center rounded-lg text-fg-quaternary transition hover:bg-gray-100 focus:outline-none"
+              aria-label="Close"
+            >
+              <X className="size-4" />
+            </button>
+
+            {/* Body */}
+            <div className="flex flex-col gap-5 p-6">
+              {/* Featured icon */}
+              <div className="flex size-10 items-center justify-center rounded-xl border border-secondary bg-primary shadow-xs">
+                <Plane className="size-5 text-fg-quaternary" />
+              </div>
+
+              {/* Title & subtitle */}
+              <div className="flex flex-col gap-1">
+                <AriaHeading slot="title" className="text-lg font-semibold text-gray-900">
+                  Update Leave Balance
+                </AriaHeading>
+                <p className="text-sm text-gray-500">
+                  Updating leave balance will be reflected to the employee
+                </p>
+              </div>
+
+              {/* Fields — pre-filled with current values */}
+              <div className="flex flex-col gap-4">
+                <InputField
+                  label="Annual Leave"
+                  value={draftAnnual}
+                  onChange={setDraftAnnual}
+                  placeholder="e.g. 147"
+                  type="number"
+                />
+                <InputField
+                  label="Sick Leave"
+                  value={draftSick}
+                  onChange={setDraftSick}
+                  placeholder="e.g. 70.2"
+                  type="number"
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="grid grid-cols-2 gap-3 px-6 pb-6">
+              <Button size="md" color="secondary" onPress={() => setIsModalOpen(false)} className="w-full justify-center">
+                Cancel
+              </Button>
+              <Button size="md" color="primary" onPress={handleSave} className="w-full justify-center">
+                Update
+              </Button>
+            </div>
+          </AriaDialog>
+        </AriaModal>
+      </AriaModalOverlay>
     </>
   );
 };
