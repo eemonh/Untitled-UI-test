@@ -4,6 +4,7 @@ import { ActivityLog } from "@/components/ActivityLog";
 import { LeaveBalance } from "@/components/LeaveBalance";
 import { BankDetails } from "@/components/BankDetails";
 import { Payroll } from "@/components/Payroll";
+import { EmployeeInformation } from "@/components/EmployeeInformation";
 import {
   Award01,
   Sliders01,
@@ -97,7 +98,12 @@ const activityItems: ActivityItem[] = [
 export const ReviewDashboard = () => {
   return (
     <div className="w-full text-left bg-secondary p-6 md:p-8 flex flex-col gap-6 rounded-2xl border border-secondary shadow-sm">
-      {/* Top Row: Payroll */}
+      {/* Top Row: Employee Information */}
+      <div className="w-full">
+        <EmployeeInformation />
+      </div>
+
+      {/* Payroll */}
       <div className="w-full">
         <Payroll />
       </div>
